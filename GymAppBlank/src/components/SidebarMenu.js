@@ -1,16 +1,19 @@
-import React from 'react';
+
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Animated, Image } from 'react-native';
+import { AuthContext } from '../context/AuthContext'; // Asegúrate de que esta importación sea correcta
 import kame from '../../assets/kame.jpg';
 
 export default function SidebarMenu({ slideAnim, toggleMenu, navigation }) {
+    const { role , logout} = useContext(AuthContext); // Obtén el rol y la función logout del contexto
+
+
     return (
         <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
             <View style={styles.headerContainer}>
                 <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
                     <Text style={styles.closeButtonText}>✖</Text>
                 </TouchableOpacity>
-
-                {/* Añadí TouchableOpacity alrededor del logo */}
                 <TouchableOpacity 
                     style={styles.logoContainer} 
                     onPress={() => {
@@ -53,11 +56,77 @@ export default function SidebarMenu({ slideAnim, toggleMenu, navigation }) {
                 >
                     Registro
                 </Text>
+                {/* Opciones adicionales basadas en el rol */}
+                {role === 0 && ( // Cambia la comparación a un número
+                    <>
+                        <Text 
+                            style={styles.menuItem} 
+                            onPress={() => {
+                                toggleMenu();  
+                                navigation.navigate('AdminDashboard');  
+                            }}
+                        >
+                            Dashboard Admin
+                        </Text>
+                        <Text 
+                            style={styles.menuItem} 
+                            onPress={() => {
+                                toggleMenu();  
+                                navigation.navigate('AdminReports');  
+                            }}
+                        >
+                            Reportes
+                        </Text>
+                        <Text 
+                            style={[styles.menuItem, styles.logout]} 
+                            onPress={() => {
+                                logout();
+                                toggleMenu();  
+                                navigation.navigate('Login');  
+                            }}
+                        >
+                            Salir
+                        </Text>
+                        
+                    </>
+                        
+                )}
+                {role === 1 && ( // Cambia la comparación a un número
+                    <>
+                        <Text 
+                            style={styles.menuItem} 
+                            onPress={() => {
+                                toggleMenu();  
+                                navigation.navigate('UserProfile');  
+                            }}
+                        >
+                            Perfil de Usuario
+                        </Text>
+                        <Text 
+                            style={styles.menuItem} 
+                            onPress={() => {
+                                toggleMenu();  
+                                navigation.navigate('Rutinas');  
+                            }}
+                        >
+                            Rutina de Ejercicios
+                        </Text>
+                        <Text 
+                            style={[styles.menuItem, styles.logout]} 
+                            onPress={() => {
+                                logout();
+                                toggleMenu();  
+                                navigation.navigate('Login');  
+                            }}
+                        >
+                            Salir
+                        </Text>
+                    </>
+                )}
             </View>
         </Animated.View>
     );
 }
-
 const styles = StyleSheet.create({
     menuContainer: {
         position: 'absolute',
@@ -116,5 +185,9 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         color: '#FFD700',
         fontWeight: 'bold',
+    },
+    logout: {
+        marginTop: 40,
+        color: '#FF6347',
     },
 });

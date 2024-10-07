@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, Dimensions, ImageBackground } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View, Text, TouchableOpacity, Animated, Dimensions, ImageBackground, StatusBar } from 'react-native';
 import SidebarMenu from '../components/SidebarMenu';
 import LoginForm from '../components/LoginForm';
 
@@ -28,13 +27,13 @@ export default function LoginScreen({ navigation }) {
   return (
     <ImageBackground source={require('../../assets/gym.jpg')} style={styles.background}>
       <View style={styles.overlay}>
+        <StatusBar style="light" />
+        
         {!menuVisible && (
           <TouchableOpacity style={styles.menuButton} onPress={toggleMenu}>
             <Text style={styles.menuButtonText}>☰</Text>
           </TouchableOpacity>
         )}
-
-        <StatusBar style="light" />
 
         {menuVisible && (
           <SidebarMenu slideAnim={slideAnim} toggleMenu={toggleMenu} navigation={navigation} />
