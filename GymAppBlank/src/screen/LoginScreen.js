@@ -1,7 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, Dimensions, ImageBackground, StatusBar } from 'react-native';
+import { StyleSheet, View, Animated, Dimensions, ImageBackground, StatusBar } from 'react-native';
+import { BlurView } from 'expo-blur';
 import SidebarMenu from '../components/SidebarMenu';
 import LoginForm from '../components/LoginForm';
+import MenuButton from '../components/MenuButton';
+import { IMAGES } from '../constantes/constantes';
 
 export default function LoginScreen({ navigation }) {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -25,22 +28,25 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <ImageBackground source={require('../../assets/gym.jpg')} style={styles.background}>
-      <View style={styles.overlay}>
-        <StatusBar style="light" />
-        
-        {!menuVisible && (
-          <TouchableOpacity style={styles.menuButton} onPress={toggleMenu}>
-            <Text style={styles.menuButtonText}>☰</Text>
-          </TouchableOpacity>
-        )}
+    <ImageBackground source={IMAGES.BACKGROUND} style={styles.background}>
+      <StatusBar barStyle="light-content" />
+      <BlurView intensity={100} style={StyleSheet.absoluteFill} tint="dark">
+        <View style={styles.container}>
+          {!menuVisible && (
+            <MenuButton onPress={toggleMenu} />
+          )}
 
-        {menuVisible && (
-          <SidebarMenu slideAnim={slideAnim} toggleMenu={toggleMenu} navigation={navigation} />
-        )}
+          {menuVisible && (
+            <SidebarMenu 
+              slideAnim={slideAnim} 
+              toggleMenu={toggleMenu} 
+              navigation={navigation} 
+            />
+          )}
 
-        {!menuVisible && <LoginForm />}
-      </View>
+          {!menuVisible && <LoginForm />}
+        </View>
+      </BlurView>
     </ImageBackground>
   );
 }
@@ -49,24 +55,11 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     resizeMode: 'cover',
-    justifyContent: 'center',
   },
-  overlay: {
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Oscurece ligeramente la imagen de fondo
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
-  },
-  menuButton: {
-    position: 'absolute',
-    top: 70,
-    left: 20,
-    zIndex: 1,
-  },
-  menuButtonText: {
-    fontSize: 30,
-    color: '#FFD700',
-    fontWeight: 'bold',
   },
 });

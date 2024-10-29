@@ -1,54 +1,40 @@
+
 import axios from 'axios';
 
 // Create an Axios instance with default settings
 const api = axios.create({
-    baseURL: 'http://192.168.100.5:8080', // url casa
+    //baseURL: 'http://192.168.100.5:8080', // url casa
     //baseURL: 'http://192.168.100.17:8080', // url casa papa
-    //baseURL: 'http://10.51.6.160:8080', //url facu alumnos
+    baseURL: 'http://10.51.6.160:8080', //url facu alumnos
     //baseURL: 'http://10.51.6.160:8080',  //url facu invitados,
-    //baseURL: 'http://172.20.10.5:8080', //url celu
+    //baseURL: 'http://10.51.6.160r:8080', //url celu
+    //baseURL: 'http://192.168.18.30:8080',
+    //baseUrl: 'http://192.168.4.176:8080', // gym fer
+    //baseUrl: 'http://192.168.1.44:8080', //casa jose
+    //baseURL: 'http://192.168.100.54:8080', //casa mati
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Function to register a new user
-export const registerUser = async (userData) => {
+export const loginUser = async (credentials) => {
   try {
-      console.log("Attempting to register user:", userData);
-      const response = await api.post('/api/users', userData);
-      console.log("Registration successful:", response.data);
-      return response.data;
+    const response = await api.post('/api/users/login', credentials);
+    return response.data;
   } catch (error) {
-      console.error("Registration error:", error);
-      if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.error("Error data:", error.response.data);
-          console.error("Error status:", error.response.status);
-          console.error("Error headers:", error.response.headers);
-      } else if (error.request) {
-          // The request was made but no response was received
-          console.error("No response received:", error.request);
-      } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error("Error message:", error.message);
-      }
-      throw error;
+    console.error("Error during login:", error);
+    throw error;
   }
 };
 
-// Function to login a user
-export const loginUser = async (loginData) => {
-    try {
-        const response = await api.post('api/users/login', loginData);
-        console.log("loginData", loginData);
-        console.log("Response:", response.data); // Muestra la respuesta en la consola
-        return response.data;
-    } catch (error) {
-        console.error("Error al iniciar sesión:", error);
-        throw error;
-    }
+export const registerUser = async (userData) => {
+  try {
+    const response = await api.post('/api/users/register', userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error en registerUser:', error);
+    throw error;
+  }
 };
 
 export const fetchUserRoutine = async (userId) => {
@@ -81,14 +67,17 @@ export const addExerciseToRoutineDay = async (userId, routineDayId, exerciseId, 
   }
 };
 
-export const removeExerciseFromRoutineDay = async (userId, routineDayId, exerciseRoutineDayId) => {
-  try {
-      await api.delete(`/api/users/${userId}/routinedays/${routineDayId}/exercises/${exerciseRoutineDayId}`);
-  } catch (error) {
-      console.error("Error removing exercise from routine day:", error);
+export const removeExerciseFromRoutineDay = async (userId, routineDayId, exerciseId) => {
+    console.log(`Eliminando ejercicio: userId=${userId}, routineDayId=${routineDayId}, exerciseId=${exerciseId}`);
+    try {
+      const response = await api.delete(`/api/users/${userId}/routinedays/${routineDayId}/exercises/${exerciseId}`);
+      console.log("Respuesta de eliminación:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error al eliminar ejercicio de día de rutina:", error.response?.data || error.message);
       throw error;
-  }
-};
+    }
+  };
 
 export const removeAllExercisesFromRoutineDay = async (userId, routineDayId) => {
   try {
@@ -108,3 +97,106 @@ export const removeAllExercisesFromAllRoutineDays = async (userId) => {
   }
   
 };;
+export const getAllUsers = async () => {
+    try {
+      const response = await api.get('/api/users');
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw error;
+    }
+  };
+  
+  export const deleteUser = async (userId) => {
+    try {
+      await api.delete(`/api/users/${userId}`);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      throw error;
+    }
+  };
+  
+  export const getUserDetails = async (userId) => {
+    try {
+      const response = await api.get(`/api/users/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      throw error;
+    }
+  };
+  
+  export const updateUser = async (userId, userData) => {
+    try {
+      const response = await api.put(`/api/users/${userId}`, userData);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  };
+  
+  export const getUserRoutine = async (userId) => {
+    try {
+      const response = await api.get(`/api/users/${userId}/routine`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user routine:", error);
+      throw error;
+    }
+  };
+  
+  export const getExercisesByMuscleGroup = async (muscleGroup) => {
+    try {
+      const response = await api.get(`/api/exercises/by-muscle-group/${muscleGroup}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching exercises by muscle group:", error);
+      throw error;
+    }
+    
+  };
+  export const getPlanPrices = async () => {
+    try {
+      const response = await api.get('/api/payments/plan-prices');
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching plan prices:", error);
+      throw error;
+    }
+  };
+  
+  export const updatePlanPrices = async (prices) => {
+    try {
+      console.log("Sending updated prices to server:", prices);
+      const response = await api.put('/api/payments/plan-prices', prices);
+      console.log("Server response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating plan prices:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+  
+  export const sendPaymentConfirmation = async (userId, paymentDetails) => {
+    try {
+      const response = await api.post(`/api/payments/${userId}/send-confirmation`, paymentDetails);
+      return response.data;
+    } catch (error) {
+      console.error("Error sending payment confirmation:", error);
+      throw error;
+    }
+  };
+  export const getUserPayments = async (userId) => {
+    try {
+      const response = await api.get(`/api/payments/users/${userId}`);
+      
+      // Mostrar los datos de los pagos por consola
+      console.log("Datos del historial de pagos:", response.data);
+      
+      return response.data; // Devuelve los pagos obtenidos
+    } catch (error) {
+      console.error("Error fetching user payments:", error);
+      throw error;
+    }
+};

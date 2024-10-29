@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import kame from '../../assets/kame.jpg';
+import { IMAGES, APP_TEXT, COLORS, SIZES } from '../constantes/constantes';
 
 export default function Header() {
   return (
     <View style={styles.header}>
       <Image
-                        source={kame}
-                        style={styles.logo}
-                    />
-      <Text style={styles.title}>KameGym</Text>
+        source={IMAGES.LOGO}
+        style={styles.logo}
+      />
+      <Text style={styles.title}>{APP_TEXT.APP_TITLE}</Text>
     </View>
   );
 }
@@ -20,17 +20,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 40,
-    backgroundColor: '#000',
+    backgroundColor: COLORS.BACKGROUND,
     marginBottom: 20,
   },
   logo: {
-    width: 40,
-    height: 40,
+    width: SIZES.LOGO,
+    height: SIZES.LOGO,
     marginRight: 10,
-    borderRadius: 50,
+    borderRadius: SIZES.LOGO / 2,
   },
   title: {
-    fontSize: 28,
-    color: '#FFD700', // amarillo casi dorado
+    fontSize: SIZES.TITLE,
+    color: COLORS.PRIMARY,
   },
 });
